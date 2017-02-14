@@ -21,15 +21,20 @@ class InputData(object):
         self.image_wrap = None
         self.image = None
 
+################################################################################
+
     def read_file(self, file_path):
         self.image_wrap = ImageWrap(file_path)
         self.image_wrap.load_image()
         self.image = self.image_wrap.image
         self.gray = self.image_wrap.gray
 
+################################################################################
+
     def raw_image(self):
         return self.image
 
+################################################################################
 
     def preprocess_image(self):
         '''

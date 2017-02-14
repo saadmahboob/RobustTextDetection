@@ -12,6 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage import measure
 from skimage import morphology
+from scipy.ndimage.morphology import distance_transform_edt
+from skimage import morphology
 
 class Detector(object):
 
@@ -48,7 +50,7 @@ class Detector(object):
         self.min_area = int(self.image_wrap.min_width * self.image_wrap.min_height)
         self.max_area = int(self.image_wrap.max_width * self.image_wrap.max_height)
 
-        self.mser = cv2.MSER_create(_min_area=200,_max_area=8000, _delta=Detector.DELTA)
+        self.mser = cv2.MSER_create(_min_area=self.min_area,_max_area=self.max_area, _delta=Detector.DELTA)
         self.filteredRegions = []
 
         # uninitialized attributes
@@ -66,20 +68,13 @@ class Detector(object):
         print("Regions before filtered : %d" % len(self.regions))
         # iterate through each regions and draw rectangles over the points sets
         for cnt in self.regions:
-            self.filter_regions(cnt)
+            try:
+                self.filter_regions(cnt)
+            except:
+                pass
 
-        print("Regions before filtered : %d" % len(self.filteredRegions))
+        print("Regions after filtered : %d" % len(self.filteredRegions))
 
-################################################################################
-
-    def getRegionBounds(self):
-        return self.hulls
-
-################################################################################
-
-    # Get the connected components after MSER detecting the text regions
-    def getconnectedComps(self):
-        return self.connectedComps
 
 ################################################################################
 
@@ -117,7 +112,11 @@ class Detector(object):
         extent = float(area)/rect_area
 
         ######### Solidity #########
-        solidity = float(area)/hull_area
+        try:
+            solidity = float(area)/hull_area
+        except:
+            solidity = 0
+
 
         ######### Descriminating the obvious text/non-text regions ###########
         if ((aspect_ratio < Detector.ASPECT_THRESH) and (eccentricity < Detector.ECCENT_THRESH)
@@ -129,9 +128,26 @@ class Detector(object):
 
 ################################################################################
 
+    # Perform a distance transform and binary thinning operation on the detected regions
+    '''
     def strokeWidthFilter(self, cont):
-        x,y,w,h = cv2.boundingRect(cnt)
-        regionImage = self.image[x:x+w, y]
+
+        im_bw = []
+        for c in cont:
+            p= self.gray[c]
+            print(p.shape)
+            if p < 127:
+                im_bw.append(0)
+            else:
+                im_bw.append(1)
+
+        (thresh, im_bw) = cv2.threshold(regionImage, 127, 255, cv2.THRESH_BINARY)
+        print(im_bw)
+        distanceImage = distance_transform_edt(1-im_bw)
+        skeletonImage = morphology.skeletonize(im_bw)
+        strokeWidthImage = distanceImage
+        #strokeWidthImage = strokeWidthImage[-skeletonImage]
+    '''
 
 ################################################################################
 

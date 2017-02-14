@@ -13,8 +13,8 @@ import cv2
 
 class ImageWrap(object):
 
-    MIN_RATIO = 0.01 # ratio for MINIMUM width, height for text candidates
-    MAX_RATIO = 0.1# ratio for MAXIMUM width, height fro text candidate
+    MIN_RATIO = 0.005 # ratio for MINIMUM width, height for text candidates
+    MAX_RATIO = 0.4 # ratio for MAXIMUM width, height for text candidate
 
     def __init__(self, image_file):
         self.image_file = image_file

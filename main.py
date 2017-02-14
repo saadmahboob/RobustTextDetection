@@ -11,15 +11,18 @@ from scence_text import SceneText
 from classifier import Classifier
 
 classifier = Classifier()
-file_path = 'data/lao.jpg'
 
-# create instances of class and loads image from path
-scene = SceneText(file_path, classifier)
+n_files = 6
+for i in range(n_files):
+    file_path = 'data/' + str(i+1) +'.jpg'
+    print(file_path)
+    # create instances of class and loads image from path
+    scene = SceneText(file_path, classifier)
 
-scene.get_input_data()
-#scene.preprocess_image()
-scene.detect_text_candidates()
-scene.remove_maybe_non_text()
-#scene.classify_candidates(classifier)
-#scene.reconstruct_text()
-scene.plot_detected_image()
+    scene.get_input_data()
+    scene.preprocess_image()
+    scene.detect_text_candidates()
+    scene.remove_maybe_non_text()
+    #scene.classify_candidates(classifier) # using SVM, or Neural Network
+    #scene.reconstruct_text()
+    scene.plot_detected_image()

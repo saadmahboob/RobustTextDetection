@@ -39,6 +39,7 @@ class SceneText(object):
     def preprocess_image(self):
         self.cleared = self.input_data.preprocess_image()
         self.bw = self.input_data.bw
+        self.cleared = self.bw.copy()
         #self.plot_image(self.filtered, 'preprocess image')
 
 ################################################################################
